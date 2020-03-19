@@ -68,11 +68,15 @@ def fetch_bookmark_urls():
     return get_urls(bookmarks)
 
 
-def get_soup(http, url):
+def get_soup(http, url, retries=100):
     if url.endswith(".pdf"):
         return None
-    r = http.urlopen("GET", url, retries=999)
-    return BeautifulSoup(r.data, "html.parser")
+    try:
+        r = http.urlopen("GET", url, retries=retries)
+        soup = BeautifulSoup(r.data, "html.parser")
+    except:
+        soup = None
+    return soup
 
 def get_links(http, url):
     soup = get_soup(http, url)
